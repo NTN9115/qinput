@@ -19,8 +19,8 @@ export default {
   components: {
     QuestionCard
   },
-  props:{
-    question_group:{}
+  props: {
+    question_group: {}
   },
   mounted: function() {
     this.total_num = this.question_group.question_cells.length;
@@ -39,7 +39,7 @@ export default {
     return {
       percentage: 0,
       anwserd_num: 0,
-      total_num: 0,
+      total_num: 0
     };
   }
 };

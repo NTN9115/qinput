@@ -53,8 +53,6 @@ export default {
 .el-radio-group {
   width: 100%;
 }
-.el-radio {
-}
 .choice {
   margin: 15px;
 }

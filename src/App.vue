@@ -5,8 +5,27 @@
     </el-col>
     <el-col :xs="22" :sm="20" :md="16" :lg="16" :xl="16">
       <div class="grid-content bg-purple-light">
-        <div v-for="(item,index) in fdata.data.question_group" :key="index">
-          <QuestionGroup :question_group="item" />
+        <div v-if="fdata.code==200">
+          <div v-if="fdata.data.pagination==0">
+            <Questionnaire0 :data="fdata.data" />
+          </div>
+          <div v-if="fdata.data.pagination==1">
+            <Questionnaire1 :data="fdata.data" />
+          </div>
+          <div v-if="fdata.data.pagination==2">
+            <Questionnaire2 :data="fdata.data" />
+          </div>
+          <!-- <el-card class="box-card">
+            <div class="qtitle">{{fdata.data.title}}</div>
+            <div class="qintroduce">{{fdata.data.introduce}}</div>
+          </el-card>
+          <div v-for="(item,index) in fdata.data.question_group" :key="index">
+            <QuestionGroup :question_group="item" />
+          </div>-->
+        </div>
+        <div v-if="fdata.code!=200">
+          <div class="code">{{fdata.code}}</div>
+          <div class="msg">{{fdata.msg}}</div>
         </div>
       </div>
     </el-col>
@@ -17,177 +36,111 @@
 </template>
 
 <script>
-import QuestionGroup from "./components/QuestionGroup";
+import Questionnaire0 from "./components/Questionnaire0";
+import Questionnaire1 from "./components/Questionnaire1";
+import Questionnaire2 from "./components/Questionnaire2";
+
+import axios from "axios";
+import Fingerprint2 from "fingerprintjs2";
 export default {
   name: "app",
   components: {
-    QuestionGroup
+    // QuestionGroup,
+    Questionnaire0,
+    Questionnaire1,
+    Questionnaire2
+  },
+  created() {
+    this.getFp().then(() => this.getData());
+  },
+  methods: {
+    async getData() {
+      let uri = window.location.pathname;
+      if (uri != "/") {
+        axios
+          .get("http://192.168.0.114:8000/questionnaireEntity" + uri, {
+            params: {
+              fingerprint: this.fingerprint
+            }
+          })
+          .then(response => {
+            this.fdata = response.data;
+            this.getSendDataFormat();
+          })
+          .catch(error => {
+            alert(error);
+          });
+      }
+    },
+    async getFp() {
+      return new Promise(resolve => {
+        Fingerprint2.get(components => {
+          var values = components.map(function(component, index) {
+            if (index === 0) {
+              return component.value.replace(/\bNetType\/\w+\b/, "");
+            }
+            return component.value;
+          });
+          var murmur = Fingerprint2.x64hash128(values.join(""), 31);
+          this.fingerprint = murmur;
+          resolve();
+        });
+      });
+    },
+    getSendDataFormat() {
+      if (this.fdata.code == 200) {
+        let data = this.fdata.data;
+        this.sdata.id = data.id;
+        let group = data.question_group;
+        let groups = [];
+        for (let i = 0; i < group.length; i++) {
+          const element = group[i];
+          let question_cell = [];
+          for (let a = 0; a < element.question_cells.length; a++) {
+            const member = element.question_cells[a];
+            let answers = [];
+            for (let b = 0; b < member.answer_cells.length; b++) {
+              const answer = member.answer_cells[b];
+              answers.push({
+                type: answer.type,
+                answer: ""
+              });
+            }
+            question_cell.push({
+              title: member.title,
+              answers: answers
+            });
+          }
+          groups.push({
+            title: element.title,
+            answers_cell: question_cell
+          });
+        }
+        this.sdata.answer_groups = groups;
+        this.sdata.fingerprint = this.fingerprint;
+      }
+    }
   },
   data() {
     return {
       fdata: {
-        code: 200,
-        msg: "success",
+        code: "",
         data: {
-          id: "5e390077424b160fe05cd388",
-          title: "小新",
-          introduce: "人平日平日平日盘",
-          pagination: 0,
-          question_group: [
-            {
-              title: "基本情况",
-              question_cells: [
-                {
-                  title: "是多发发",
-                  answer_cells: [
-                    {
-                      type: "choice",
-                      choice: [
-                        "选项但是上的分",
-                        "选项上的分",
-                        "awsl",
-                        "选你项"
-                      ],
-                      is_multi: false
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "沙发",
-                  answer_cells: [
-                    {
-                      type: "choice",
-                      choice: ["12311", "345", "33443"],
-                      is_multi: false
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "阿三多发多发",
-                  answer_cells: [
-                    {
-                      type: "date",
-                      vdate: false,
-                      vtime: false
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "string",
-                  answer_cells: [
-                    {
-                      type: "comment"
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "是多发发",
-                  answer_cells: [
-                    {
-                      type: "choice",
-                      choice: ["选项但是上的分", "选项上的分"],
-                      is_multi: false
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "沙发",
-                  answer_cells: [
-                    {
-                      type: "choice",
-                      choice: ["12311", "345", "33443"],
-                      is_multi: false
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "是多发发",
-                  answer_cells: [
-                    {
-                      type: "comment",
-                      limit: 20,
-                      line: 4,
-                      empty: true
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "阿三多发多发",
-                  answer_cells: [
-                    {
-                      type: "date",
-                      vdate: false,
-                      vtime: false
-                    }
-                  ],
-                  must_answer: 0
-                },
-                {
-                  title: "上的分胜负",
-                  answer_cells: [
-                    {
-                      type: "choice",
-                      choice: ["选项1", "选项2", "选项3", "选项4"],
-                      is_multi: true
-                    },
-                    {
-                      type: "comment",
-                      limit: 100,
-                      line: 2,
-                      empty: false
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "是多发发",
-                  answer_cells: [
-                    {
-                      type: "comment",
-                      limit: 20,
-                      line: 4,
-                      empty: true
-                    }
-                  ],
-                  must_answer: 1
-                },
-                {
-                  title: "沙发",
-                  answer_cells: [
-                    {
-                      type: "choice",
-                      choice: ["12311", "345", "33443"],
-                      is_multi: false
-                    }
-                  ],
-                  must_answer: 1
-                }
-              ]
-            }
-          ]
+          question_group: []
         }
-      }
+      },
+      sdata: {
+        id: "",
+        answer_groups: [],
+        fingerprint: ""
+      },
+      fingerprint: ""
     };
   }
 };
 </script>
 
 <style>
-/* #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
 .el-row {
   margin-bottom: 20px;
 }
@@ -207,5 +160,20 @@ export default {
 .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
+}
+.code {
+  font-size: 370%;
+  color: grey;
+}
+.msg {
+  font-size: 170%;
+  color: rgb(44, 44, 44);
+}
+.qtitle {
+  font-size: 36px;
+  text-align: center;
+}
+.qintroduce {
+  color: rgb(42, 42, 42);
 }
 </style>
