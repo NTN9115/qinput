@@ -7,7 +7,7 @@
 
     <div v-for="(cell,index) in question_group.question_cells" :key="index">
       <div>
-        <QuestionCard :question_cell="cell" @add="add" @minus="minus" />
+        <QuestionCard :question_cell="cell"/>
       </div>
     </div>
   </div>
@@ -15,32 +15,26 @@
 
 <script>
 import QuestionCard from "./QuestionCard";
+// import { mapGetters } from "vuex";
 export default {
   components: {
     QuestionCard
   },
   props: {
-    question_group: {}
-  },
-  mounted: function() {
-    this.total_num = this.question_group.question_cells.length;
-  },
-  methods: {
-    add() {
-      this.anwserd_num += 1;
-      this.percentage = (this.anwserd_num / this.total_num) * 100;
-    },
-    minus() {
-      this.anwserd_num -= 1;
-      this.percentage = (this.anwserd_num / this.total_num) * 100;
-    }
+    question_group: {},
   },
   data() {
     return {
       percentage: 0,
-      anwserd_num: 0,
-      total_num: 0
     };
+  },
+  computed: {
+    // ...mapGetters("submitData", {
+    //   percentage: "getGroupAnsweredPercentage"
+    // })
+  },
+  mounted() {
+    // this.percentage = this.getGroupAnsweredPercentage(this.index);
   }
 };
 </script>

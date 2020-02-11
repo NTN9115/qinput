@@ -5,7 +5,6 @@
       <div class="qintroduce">{{data.introduce}}</div>
     </el-card>
     <QuestionGroup :question_group="item" />
-    <div class="buttongroup"></div>
     <div class="button-group">
       <el-button class="button" type="primary" v-show="index!=0" @click="getPriv()" >上一页</el-button>
       <el-button class="button" type="primary" @click="getNext()">下一页</el-button>

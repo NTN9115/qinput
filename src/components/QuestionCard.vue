@@ -3,19 +3,18 @@
     <div slot="header" class="clearfix">
       <QuestionTitle :title="question_cell.title" :must_answer="question_cell.must_answer" />
     </div>
-    <div v-for="(answer_cell,index) in question_cell.answer_cells" :key="index">
-      <Choice :cell="answer_cell" v-if="answer_cell.type==='choice'" @full="full" @unfull="unfull" />
+    <div v-for="(answer_cell,a_index) in question_cell.answer_cells" :key="a_index">
+      <Choice
+        :cell="answer_cell"
+        v-if="answer_cell.type==='choice'"
+      />
       <DateChoice
         :cell="answer_cell"
         v-else-if="answer_cell.type==='date'"
-        @full="full"
-        @unfull="unfull"
       />
       <Comment
         :cell="answer_cell"
         v-else-if="answer_cell.type==='comment'"
-        @full="full"
-        @unfull="unfull"
       />
     </div>
   </el-card>
@@ -38,21 +37,13 @@ export default {
     question_cell: {
       title: String,
       answer_cells: [],
-      must_answer: Number
+      must_answer: Number,
     }
   },
   data() {
     return {
       fulled: false
     };
-  },
-  methods: {
-    full: function() {
-      this.fulled = true;
-    },
-    unfull: function() {
-      this.fulled = false;
-    }
   },
   watch: {
     fulled: function(n) {

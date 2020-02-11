@@ -36,105 +36,60 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
+
 import Questionnaire0 from "./components/Questionnaire0";
 import Questionnaire1 from "./components/Questionnaire1";
 import Questionnaire2 from "./components/Questionnaire2";
-
-import axios from "axios";
-import Fingerprint2 from "fingerprintjs2";
+// import api from "@/api";
+import { mapGetters } from "vuex";
 export default {
   name: "app",
   components: {
-    // QuestionGroup,
     Questionnaire0,
     Questionnaire1,
     Questionnaire2
   },
+  // beforeCreate() {
+  //   this.$store.dispatch("submitData/setFingerprint");
+  // },
   created() {
-    this.getFp().then(() => this.getData());
+    let uri = window.location.pathname;
+    this.$store.commit('submitData/setUri',uri);
+    this.$store.dispatch("submitData/init");
   },
-  methods: {
-    async getData() {
-      let uri = window.location.pathname;
-      if (uri != "/") {
-        axios
-          .get("http://192.168.0.114:8000/questionnaireEntity" + uri, {
-            params: {
-              fingerprint: this.fingerprint
-            }
-          })
-          .then(response => {
-            this.fdata = response.data;
-            this.getSendDataFormat();
-          })
-          .catch(error => {
-            alert(error);
-          });
-      }
-    },
-    async getFp() {
-      return new Promise(resolve => {
-        Fingerprint2.get(components => {
-          var values = components.map(function(component, index) {
-            if (index === 0) {
-              return component.value.replace(/\bNetType\/\w+\b/, "");
-            }
-            return component.value;
-          });
-          var murmur = Fingerprint2.x64hash128(values.join(""), 31);
-          this.fingerprint = murmur;
-          resolve();
-        });
-      });
-    },
-    getSendDataFormat() {
-      if (this.fdata.code == 200) {
-        let data = this.fdata.data;
-        this.sdata.id = data.id;
-        let group = data.question_group;
-        let groups = [];
-        for (let i = 0; i < group.length; i++) {
-          const element = group[i];
-          let question_cell = [];
-          for (let a = 0; a < element.question_cells.length; a++) {
-            const member = element.question_cells[a];
-            let answers = [];
-            for (let b = 0; b < member.answer_cells.length; b++) {
-              const answer = member.answer_cells[b];
-              answers.push({
-                type: answer.type,
-                answer: ""
-              });
-            }
-            question_cell.push({
-              title: member.title,
-              answers: answers
-            });
-          }
-          groups.push({
-            title: element.title,
-            answers_cell: question_cell
-          });
-        }
-        this.sdata.answer_groups = groups;
-        this.sdata.fingerprint = this.fingerprint;
-      }
-    }
+  computed: {
+    ...mapGetters({
+      fingerprint: "submitData/getFingerprint",
+      fdata: "submitData/getQData"
+    })
   },
+
+    // getSendDataFormat() {
+    //   if (this.fdata.code == 200) {
+    //     axios
+    //       .get("http://192.168.0.114:8000/result/template" + this.uri)
+    //       .then(response => {
+    //         let submit = response.data.data;
+    //         submit.fingerprint = this.fingerprint;
+    //         this.$store.commit('setSubmitData',submit);
+    //       });
+    //   }
+
   data() {
     return {
-      fdata: {
-        code: "",
-        data: {
-          question_group: []
-        }
-      },
+      uri: "",
+      // fdata: {
+      //   code: "",
+      //   data: {
+      //     question_group: []
+      //   }
+      // },
       sdata: {
         id: "",
         answer_groups: [],
         fingerprint: ""
-      },
-      fingerprint: ""
+      }
     };
   }
 };

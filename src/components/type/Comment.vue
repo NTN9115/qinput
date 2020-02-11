@@ -16,17 +16,25 @@ export default {
   name: "Comment",
   props: {
     cell: {
+      index: []
     }
   },
   watch: {
     textarea: function(n) {
-      if (n != "") {
-        this.$emit("full");
-      } else {
-        this.$emit("unfull");
-      }
+      this.$store.commit("setAnswer", {
+        index: this.cell.index,
+        answer: n
+      });
     }
   },
+  // methods: {
+  //   getData() {
+  //     this.textarea = this.$store.getters.getAnswer(this.index);
+  //   }
+  // },
+  // created() {
+  //   this.getData();
+  // },
   data() {
     return {
       textarea: ""

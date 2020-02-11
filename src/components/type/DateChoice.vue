@@ -17,17 +17,25 @@ export default {
   name: "DateChoice",
   props: {
     cell: {
+      index: []
     }
   },
   watch: {
     datetime: function(n) {
-      if (n != null) {
-        this.$emit("full");
-      } else {
-        this.$emit("unfull");
-      }
+      this.$store.commit("setAnswer", {
+        index: this.cell.index,
+        answer: n
+      });
     }
   },
+  // methods:{
+  //   getData(){
+  //     this.datetime=this.$store.getters.getAnswer(this.index);
+  //   }
+  // },
+  // created(){
+  //   this.getData();
+  // },
   data() {
     return {
       datetime: ""
