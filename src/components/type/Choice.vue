@@ -11,7 +11,6 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
 import { mapGetters } from "vuex";
 export default {
   name: "Choice",
@@ -19,12 +18,6 @@ export default {
     cell: {
       index: []
     }
-  },
-  data() {
-    return {
-      // answer:'',
-      answer2: []
-    };
   },
   computed: {
     ...mapGetters({
@@ -41,27 +34,7 @@ export default {
         });
       }
     }
-  },
-  methods: {
-    change2(label) {
-      console.log(this.$store.getters.getAnswer(this.cell.index));
-      this.$store.dispatch("setAnswer", {
-        index: this.cell.index,
-        answer: label
-      });
-    }
   }
-
-  // watch: {
-  //   answer: function(n) {
-  //     console.log("change")
-  //     console.log(n)
-  //     this.$store.commit("setAnswer", {
-  //       index: this.cell.index,
-  //       answer: n
-  //     });
-  //   }
-  // }
 };
 </script>
 <style scoped>

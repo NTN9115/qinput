@@ -5,7 +5,7 @@
       <div class="qintroduce">{{data.introduce}}</div>
     </el-card>
     <div v-for="(item,index) in data.question_group" :key="index">
-      <QuestionGroup :question_group="item"/>
+      <QuestionGroup :question_group="item" :index="index"/>
     </div>
   </div>
 </template>

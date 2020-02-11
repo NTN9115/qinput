@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card title">
       <div>{{question_group.title}}</div>
-      <el-progress :show-text="false" :stroke-width="6" :percentage="percentage"></el-progress>
+      <el-progress :show-text="false" :stroke-width="6" :status='percentageInfo.status' :percentage="percentageInfo.percentage"></el-progress>
     </el-card>
 
     <div v-for="(cell,index) in question_group.question_cells" :key="index">
@@ -15,27 +15,26 @@
 
 <script>
 import QuestionCard from "./QuestionCard";
-// import { mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   components: {
     QuestionCard
   },
   props: {
     question_group: {},
+    index:Number
   },
   data() {
     return {
-      percentage: 0,
+      status: "warning"
     };
   },
   computed: {
-    // ...mapGetters("submitData", {
-    //   percentage: "getGroupAnsweredPercentage"
-    // })
+    ...mapGetters("submitData", {
+      getPercentage: "getGroupAnsweredPercentage",
+    }),
+    percentageInfo(){return this.getPercentage(this.index)}
   },
-  mounted() {
-    // this.percentage = this.getGroupAnsweredPercentage(this.index);
-  }
 };
 </script>
 <style>

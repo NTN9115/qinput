@@ -32,18 +32,38 @@ const getters = {
         let group = state.submitData.result_groups[index].results;
         let length = group.length;
         let answerd = 0;
-        for (let i = 0; i < group.length; i++) {
+        let must_length = 0;
+        let must_answerd = 0;
+        let status = '';
+        for (let i = 0; i < length; i++) {
             const element = group[i];
-            let a = element.answers;
+            let a = element.answer_cells;
+            let must = element.must_answer;
+            if (must == 1) {
+                must_length++;
+            }
             for (let b = 0; b < a.length; b++) {
-                const n = a[b];
-                if (n !== "" || n !== null || n !== []) {
+                const n = a[b].answer;
+                if (n !== "" && n != null && n.length!=0) {
                     answerd++;
+                    if (must == 1) {
+                        must_answerd++;
+                    }
                     break;
                 }
             }
         }
-        return answerd / length;
+        if (must_answerd === must_length) {
+            status = 'success'
+        } else {
+            status = 'warning'
+        }
+
+
+        return {
+            percentage: answerd / length * 100,
+            status: status
+        }
     }
 }
 
@@ -90,7 +110,9 @@ const actions = {
                 commit('setFp', { fingerprint: murmur });
                 api.getSendDataFormat(state.uri)
                     .then((data) => {
-                        data.data.result_groups.forEach(v1 => v1.results.forEach(v2 => v2.answer_cells.forEach(v3 => v3['answer'] = '')))
+                        data.data.result_groups.forEach(v1 => v1.results.forEach(v2 => v2.answer_cells.forEach(v3 => {
+                            v3.is_multi==true?v3['answer']=[]:v3['answer']=null
+                        })))
                         commit('setSubmitData', data.data)
                     })
                     .then(() => api.getQuestionnaireData(state.fingerprint, state.uri)

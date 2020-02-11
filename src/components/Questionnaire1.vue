@@ -4,11 +4,16 @@
       <div class="qtitle">{{data.title}}</div>
       <div class="qintroduce">{{data.introduce}}</div>
     </el-card>
-    <QuestionGroup :question_group="item" />
-    <div class="button-group">
-      <el-button class="button" type="primary" v-show="index!=0" @click="getPriv()" >上一页</el-button>
-      <el-button class="button" type="primary" @click="getNext()">下一页</el-button>
-    </div>
+    <QuestionGroup :question_group="item" :index ='index'/>
+    <el-row type="flex" justify="space-between" class="button-group" :gutter="20">
+      <el-col :span="12">
+        <el-button class="button" type="primary" v-if="index!=0" @click="getPriv()">上一页</el-button>
+      </el-col>
+      <el-col :span="12">
+        <el-button class="button right" type="primary" v-if="index!=index_all" @click="getNext()">下一页</el-button>
+        <el-button class="button right" type="primary" v-if="index==index_all" >提交</el-button>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -36,7 +41,7 @@ export default {
   },
   methods: {
     getItem() {
-      this.item=this.data.question_group[this.index];
+      this.item = this.data.question_group[this.index];
     },
     getFirst() {
       this.getItem();
@@ -57,10 +62,10 @@ export default {
 </script>
 <style scoped>
 .button {
-  width: 40%;
+  width: 92%;
 }
-.button-group {
-  display: flex;
-  justify-content: space-between;
+.right {
+  float:right;
 }
+
 </style>
