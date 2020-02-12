@@ -22,6 +22,7 @@
           class="button right"
           type="primary"
           v-if="index==index_all"
+           @click='submit'
         >提交</el-button>
       </el-col>
     </el-row>
@@ -57,6 +58,9 @@ export default {
     })
   },
   methods: {
+    submit() {
+      this.$emit("submit");
+    },
     getItem() {
       this.item = this.data.question_group[this.index];
       this.setCurretDisplayQuestion();

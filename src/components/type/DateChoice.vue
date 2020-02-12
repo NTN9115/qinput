@@ -38,7 +38,7 @@ export default {
       set(label) {
         this.$store.commit("submitData/setAnswer", {
           index: this.cell.index,
-          answer: label.toLocaleString("zh-CN", { timeZone: "UTC+8" })
+          answer: this.$moment(label).format('YYYY-MM-DD HH:mm:ss')
         });
       }
     }

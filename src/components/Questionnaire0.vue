@@ -10,7 +10,7 @@
     <el-row type="flex" justify="space-between" class="button-group" :gutter="20">
       <el-col :span="12"></el-col>
       <el-col :span="12">
-        <el-button :disabled="disabled" class="button right" type="primary">提交</el-button>
+        <el-button :disabled="disabled" class="button right" type="primary" @click="submit">提交</el-button>
       </el-col>
     </el-row>
   </div>
@@ -33,10 +33,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      disabled: "submitData/getCurrentFinishStatus",
+      disabled: "submitData/getCurrentFinishStatus"
     })
   },
   methods: {
+    submit() {
+      this.$emit("submit");
+    },
     setCurretDisplayQuestion() {
       let currentIndex = this.data.question_group
         .flatMap(t1 => t1.question_cells)

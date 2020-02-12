@@ -7,10 +7,10 @@
       <div class="grid-content bg-purple-light">
         <div v-if="fdata.code==200">
           <div v-if="fdata.data.pagination==0">
-            <Questionnaire0 :data="fdata.data" />
+            <Questionnaire0 :data="fdata.data" @submit="sendSubmitData"/>
           </div>
           <div v-if="fdata.data.pagination==1">
-            <Questionnaire1 :data="fdata.data" />
+            <Questionnaire1 :data="fdata.data" @submit="sendSubmitData" />
           </div>
           <div v-if="fdata.data.pagination==2">
             <Questionnaire2 :data="fdata.data" @submit="sendSubmitData" />
@@ -105,7 +105,7 @@ export default {
   color: rgb(44, 44, 44);
 }
 .qtitle {
-  font-size: 36px;
+  font-size: 28px;
   text-align: center;
 }
 .qintroduce {

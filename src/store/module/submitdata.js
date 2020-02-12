@@ -137,7 +137,7 @@ const actions = {
                         data.data.result_groups.forEach(v1 => v1.results.forEach(v2 => v2.answer_cells.forEach(v3 => {
                             v3.type=='choice'?v3['answer']=[]:v3['answer']=null
                         })));
-                        data.data.fingerprint=murmur;
+                        data.data.finger_print=murmur;
                         commit('setSubmitData', data.data)
                     })
                     .then(() => api.getQuestionnaireData(state.fingerprint, state.uri)
