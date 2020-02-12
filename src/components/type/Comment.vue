@@ -5,7 +5,7 @@
       type="textarea"
       :autosize="{ minRows: cell['line']!=null?cell['line']:1, maxRows: cell['line']!=null?cell['line']:2}"
       placeholder="请输入内容"
-      v-model="answer.answer"
+      v-model="answer"
       :maxlength="cell['limit']"
       show-word-limit
     ></el-input>
@@ -23,11 +23,11 @@ export default {
 
   computed: {
     ...mapGetters({
-      setAnswer: "submitData/getAnswer"
+      getAnswer: "submitData/getAnswer"
     }),
     answer: {
       get() {
-        return this.setAnswer(this.cell.index);
+        return this.getAnswer(this.cell.index);
       },
       set(label) {
         this.$store.commit("submitData/setAnswer", {

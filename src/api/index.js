@@ -23,5 +23,13 @@ export default {
                 .then(response => resolve(response.data))
                 .catch(error => reject(error));
         })
+    },
+    submitData( submitdata) {
+        console.log(submitdata)
+        return new Promise((resolve, reject) => {
+            _axios.post("/result", submitdata)
+                .then(response => resolve(response.data))
+                .catch(error => reject(error));
+        });
     }
 }

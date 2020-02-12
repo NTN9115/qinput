@@ -13,15 +13,8 @@
             <Questionnaire1 :data="fdata.data" />
           </div>
           <div v-if="fdata.data.pagination==2">
-            <Questionnaire2 :data="fdata.data" />
+            <Questionnaire2 :data="fdata.data" @submit="sendSubmitData" />
           </div>
-          <!-- <el-card class="box-card">
-            <div class="qtitle">{{fdata.data.title}}</div>
-            <div class="qintroduce">{{fdata.data.introduce}}</div>
-          </el-card>
-          <div v-for="(item,index) in fdata.data.question_group" :key="index">
-            <QuestionGroup :question_group="item" />
-          </div>-->
         </div>
         <div v-if="fdata.code!=200">
           <div class="code">{{fdata.code}}</div>
@@ -36,12 +29,10 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
-
 import Questionnaire0 from "./components/Questionnaire0";
 import Questionnaire1 from "./components/Questionnaire1";
 import Questionnaire2 from "./components/Questionnaire2";
-// import api from "@/api";
+import api from "@/api";
 import { mapGetters } from "vuex";
 export default {
   name: "app",
@@ -50,41 +41,30 @@ export default {
     Questionnaire1,
     Questionnaire2
   },
-  // beforeCreate() {
-  //   this.$store.dispatch("submitData/setFingerprint");
-  // },
+
   created() {
     let uri = window.location.pathname;
-    this.$store.commit('submitData/setUri',uri);
+    this.$store.commit("submitData/setUri", uri);
     this.$store.dispatch("submitData/init");
   },
   computed: {
     ...mapGetters({
       fingerprint: "submitData/getFingerprint",
-      fdata: "submitData/getQData"
+      fdata: "submitData/getQData",
+      submitData: "submitData/get"
     })
   },
-
-    // getSendDataFormat() {
-    //   if (this.fdata.code == 200) {
-    //     axios
-    //       .get("http://192.168.0.114:8000/result/template" + this.uri)
-    //       .then(response => {
-    //         let submit = response.data.data;
-    //         submit.fingerprint = this.fingerprint;
-    //         this.$store.commit('setSubmitData',submit);
-    //       });
-    //   }
-
+  methods: {
+    sendSubmitData() {
+      api
+        .submitData(this.submitData)
+        .then(data => alert(data))
+        .catch(error => alert(error));
+    }
+  },
   data() {
     return {
       uri: "",
-      // fdata: {
-      //   code: "",
-      //   data: {
-      //     question_group: []
-      //   }
-      // },
       sdata: {
         id: "",
         answer_groups: [],

@@ -6,7 +6,8 @@ const state = {
     },
     fingerprint: '',
     qData: {},
-    uri: ''
+    uri: '',
+    currentIndex:[]
 }
 
 const getters = {
@@ -26,7 +27,7 @@ const getters = {
         return state.submitData.result_groups[indexa].results[indexb];
     },
     getAnswer: (state) => (index) => {
-        return state.submitData.result_groups[index[0]].results[index[1]].answer_cells[index[2]];
+        return state.submitData.result_groups[index[0]].results[index[1]].answer_cells[index[2]].answer;
     },
     getGroupAnsweredPercentage: (state) => (index) => {
         let group = state.submitData.result_groups[index].results;
@@ -64,6 +65,26 @@ const getters = {
             percentage: answerd / length * 100,
             status: status
         }
+    },
+    getCurrentFinishStatus: (state) =>{
+        for (let i = 0; i < state.currentIndex.length; i++) {
+            const index = state.currentIndex[i];
+            let question = state.submitData.result_groups[index[0]].results[index[1]];
+            if (question.must_answer==1){
+                for (let b = 0; b < question.answer_cells.length; b++) {
+                    const n = question.answer_cells[b];
+                             
+                    if(n.type=='comment'){
+                        if(n.empty==false && (n.answer==="" || n.answer==null)){
+                            return true;
+                        }
+                    } else if (n.answer === "" || n.answer == null || n.answer.length == 0){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 
@@ -71,6 +92,9 @@ const mutations = {
     setAnswer(state, payload) {
         state.submitData.result_groups[payload.index[0]].results[payload.index[1]].answer_cells[payload.index[2]]['answer'] = payload.answer;
 
+    },
+    setCurrentIndex(state,currentIndex){
+        state.currentIndex = currentIndex;
     },
     setQd(state, qData) {
         state.qData = qData;
@@ -111,8 +135,9 @@ const actions = {
                 api.getSendDataFormat(state.uri)
                     .then((data) => {
                         data.data.result_groups.forEach(v1 => v1.results.forEach(v2 => v2.answer_cells.forEach(v3 => {
-                            v3.is_multi==true?v3['answer']=[]:v3['answer']=null
-                        })))
+                            v3.type=='choice'?v3['answer']=[]:v3['answer']=null
+                        })));
+                        data.data.fingerprint=murmur;
                         commit('setSubmitData', data.data)
                     })
                     .then(() => api.getQuestionnaireData(state.fingerprint, state.uri)
