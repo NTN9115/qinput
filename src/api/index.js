@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import axios from 'axios'
 let config = {
-    baseURL: 'http://192.168.0.114:8000'
+    baseURL: 'http://127.0.0.1:7999'
 };
 const _axios = axios.create(config);
 export default {

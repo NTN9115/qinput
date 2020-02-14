@@ -8,7 +8,6 @@ import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
 Vue.prototype.$moment = moment
 Vue.config.productionTip = false
-
 new Vue({
   store,
   render: h => h(App)
