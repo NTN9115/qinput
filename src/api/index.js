@@ -1,9 +1,10 @@
-/* eslint-disable no-console */
 import axios from 'axios'
-let config = {
-    baseURL: 'http://127.0.0.1:7999'
+import secret from '../utils/secret'
+import config from '../static/config'
+let axiosConfig = {
+    baseURL: config.url
 };
-const _axios = axios.create(config);
+const _axios = axios.create(axiosConfig);
 export default {
     getQuestionnaireData(fingerprint, uri) {
         return new Promise((resolve, reject) => {
@@ -24,10 +25,11 @@ export default {
                 .catch(error => reject(error));
         })
     },
-    submitData( submitdata) {
-        console.log(submitdata)
+    submitData(submitdata) {
         return new Promise((resolve, reject) => {
-            _axios.post("/result", submitdata)
+            _axios.post("/result", {
+                data: secret.Encrypt(submitdata)
+            })
                 .then(response => resolve(response.data))
                 .catch(error => reject(error));
         });

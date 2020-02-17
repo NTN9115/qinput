@@ -22,7 +22,7 @@
           class="button right"
           type="primary"
           v-if="index==index_all"
-           @click='submit'
+          @click="submit"
         >提交</el-button>
       </el-col>
     </el-row>
@@ -58,6 +58,12 @@ export default {
     })
   },
   methods: {
+    runScroll() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    },
     submit() {
       this.$emit("submit");
     },
@@ -74,14 +80,15 @@ export default {
     getNext() {
       this.index++;
       this.getItem();
+      this.runScroll();
     },
     getPriv() {
       this.index--;
       this.getItem();
+      this.runScroll();
     },
     setCurretDisplayQuestion() {
-      let currentIndex = this.item.question_cells
-        .map(t2 => t2.index);
+      let currentIndex = this.item.question_cells.map(t2 => t2.index);
       this.$store.commit("submitData/setCurrentIndex", currentIndex);
     }
   }

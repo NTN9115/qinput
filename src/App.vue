@@ -1,33 +1,33 @@
 <template>
   <div>
-    <el-row>
-      <el-col :xs="1" :sm="2" :md="4" :lg="4" :xl="4">
-        <div class="grid-content bg-purple"></div>
-      </el-col>
-      <el-col :xs="22" :sm="20" :md="16" :lg="16" :xl="16">
-        <div class="grid-content bg-purple-light">
-          <div v-if="fdata.code==200">
-            <div v-if="fdata.data.pagination==0">
-              <Questionnaire0 :data="fdata.data" @submit="sendSubmitData" />
+        <el-row>
+          <el-col :xs="1" :sm="2" :md="4" :lg="4" :xl="4">
+            <div class="grid-content bg-purple"></div>
+          </el-col>
+          <el-col :xs="22" :sm="20" :md="16" :lg="16" :xl="16">
+            <div class="grid-content bg-purple-light">
+              <div v-if="fdata.code==200">
+                <div v-if="fdata.data.pagination==0">
+                  <Questionnaire0 :data="fdata.data" @submit="sendSubmitData" />
+                </div>
+                <div v-if="fdata.data.pagination==1">
+                  <Questionnaire1 :data="fdata.data" @submit="sendSubmitData" />
+                </div>
+                <div v-if="fdata.data.pagination==2">
+                  <Questionnaire2 :data="fdata.data" @submit="sendSubmitData" />
+                </div>
+              </div>
+              <div v-if="fdata.code!=200">
+                <div class="code">{{fdata.code}}</div>
+                <div class="msg">{{fdata.msg}}</div>
+              </div>
             </div>
-            <div v-if="fdata.data.pagination==1">
-              <Questionnaire1 :data="fdata.data" @submit="sendSubmitData" />
-            </div>
-            <div v-if="fdata.data.pagination==2">
-              <Questionnaire2 :data="fdata.data" @submit="sendSubmitData" />
-            </div>
-          </div>
-          <div v-if="fdata.code!=200">
-            <div class="code">{{fdata.code}}</div>
-            <div class="msg">{{fdata.msg}}</div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="1" :sm="2" :md="4" :lg="4" :xl="4">
-        <div class="grid-content bg-purple"></div>
-      </el-col>
-    </el-row>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+          </el-col>
+          <el-col :xs="1" :sm="2" :md="4" :lg="4" :xl="4">
+            <div class="grid-content bg-purple"></div>
+          </el-col>
+        </el-row>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="60%">
       <span>{{info}}</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="closeTab">确 定</el-button>
@@ -65,15 +65,23 @@ export default {
   },
   methods: {
     sendSubmitData() {
+      const loading = this.$loading({
+        lock: true,
+        text: "提交中",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       api
         .submitData(this.submitData)
         .then(data => {
           if (data.code == 200) {
             this.info = "提交成功，点击确认关闭页面";
             this.dialogVisible = true;
+            loading.close();
           } else {
             this.info = "提交失败：" + data.msg + "点击确认关闭页面";
             this.dialogVisible = true;
+            loading.close();
           }
         })
         .catch(error => alert(error, "请联系管理员"));
@@ -134,4 +142,5 @@ export default {
 .qintroduce {
   color: rgb(42, 42, 42);
 }
+
 </style>

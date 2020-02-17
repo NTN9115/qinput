@@ -33,13 +33,21 @@ export default {
     }),
     answer: {
       get() {
-        return this.getAnswer(this.cell.index);
+        let date = this.getAnswer(this.cell.index);
+        return date;
       },
       set(label) {
-        this.$store.commit("submitData/setAnswer", {
+        if(label == null){
+          this.$store.commit("submitData/setAnswer", {
           index: this.cell.index,
-          answer: this.$moment(label).format('YYYY-MM-DD HH:mm:ss')
+          answer: null
         });
+        }else{
+          this.$store.commit("submitData/setAnswer", {
+          index: this.cell.index,
+          answer: this.$moment(label).format("YYYY-MM-DD HH:mm:ss")
+        });
+        }
       }
     }
   }

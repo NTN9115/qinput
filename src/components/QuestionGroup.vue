@@ -2,7 +2,8 @@
   <div>
     <el-card class="box-card title">
       <div>{{question_group.title}}</div>
-      <el-progress :show-text="false" :stroke-width="6" :status='percentageInfo.status' :percentage="percentageInfo.percentage"></el-progress>
+      <el-progress :show-text="false" :stroke-width="6" 
+      :percentage="percentageInfo.percentage" :color="percentageInfo.color"></el-progress>
     </el-card>
 
     <div v-for="(cell,index) in question_group.question_cells" :key="index">

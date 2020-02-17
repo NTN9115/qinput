@@ -23,17 +23,67 @@ export default {
 
   computed: {
     ...mapGetters({
-      getAnswer: "submitData/getAnswer"
+      getAnswer: "submitData/getAnswer",
+      getQuestion: "submitData/getFirstAnswer"
     }),
     answer: {
       get() {
-        return this.getAnswer(this.cell.index);
+        if (this.cell.index[2] == 0) {
+          return this.getAnswer(this.cell.index);
+        } else {
+          let c = this.getQuestion(this.cell.index);
+          let a = this.getAnswer(this.cell.index);
+          if (c.is_multi) {
+            let answer = "";
+            for (let i = 0; i < a.length; i++) {
+              const e = a[i];
+              if (!c.choice.includes(e)) {
+                answer = e;
+                break;
+              }
+            }
+            return answer;
+          } else {
+            if (c.choice.includes(a[0])) {
+              return "";
+            } else {
+              return a[0];
+            }
+          }
+        }
       },
       set(label) {
-        this.$store.commit("submitData/setAnswer", {
-          index: this.cell.index,
-          answer: label
-        });
+        if (this.cell.index[2] == 0) {
+          this.$store.commit("submitData/setAnswer", {
+            index: this.cell.index,
+            answer: label
+          });
+        } else {
+          let c = this.getQuestion(this.cell.index);
+          let choice = c.choice;
+          if (c.is_multi) {
+            let list = [];
+            let a = this.getAnswer(this.cell.index);
+            for (let i = 0; i < a.length; i++) {
+              const e = a[i];
+              if (choice.includes(e)) {
+                list.push(e);
+              }
+            }
+            if(label!= ""){
+              list.push(label);
+            }
+            this.$store.commit("submitData/setAnswer", {
+              index: this.cell.index,
+              answer: list
+            });
+          } else {
+            this.$store.commit("submitData/setAnswer", {
+              index: this.cell.index,
+              answer: [label]
+            });
+          }
+        }
       }
     }
   }

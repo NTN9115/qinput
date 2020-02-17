@@ -24,7 +24,7 @@
           class="button right"
           type="primary"
           v-if="groupListIndex==groupList.length-1 "
-          @click='submit'
+          @click="submit"
         >提交</el-button>
       </el-col>
     </el-row>
@@ -66,6 +66,12 @@ export default {
     })
   },
   methods: {
+    runScroll() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    },
     submit() {
       this.$emit("submit");
     },
@@ -77,11 +83,13 @@ export default {
       this.groupListIndex--;
       this.groupListItem = this.groupList[this.groupListIndex];
       this.setCurretDisplayQuestion();
+      this.runScroll();
     },
     getNext() {
       this.groupListIndex++;
       this.groupListItem = this.groupList[this.groupListIndex];
       this.setCurretDisplayQuestion();
+      this.runScroll();
     },
     getGroupList() {
       while (this.flag == false) {

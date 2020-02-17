@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.4.4",
+    "crypto-js": "^4.0.0",
     "element-ui": "^2.4.5",
     "fingerprintjs2": "^2.1.0",
     "moment": "^2.24.0",

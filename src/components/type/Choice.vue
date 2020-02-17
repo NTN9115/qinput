@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getAnswer: "submitData/getAnswer"
+      getAnswer: "submitData/getAnswer",
     }),
     answer: {
       get() {
